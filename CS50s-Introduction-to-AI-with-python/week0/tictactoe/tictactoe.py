@@ -74,17 +74,17 @@ def winner(board):
     Returns the winner of the game, if there is one.
     """
     for i in range(0, len(board)):
-        if (board[i][0] != EMPTY) and (board[i][0] == board[i][1] == board[i][2]):
+        if board[i][0] != EMPTY and board[i][0] == board[i][1] == board[i][2]:
             return board[i][0]
 
     for j in range(0, len(board)):
-        if (board[0][j] != EMPTY) and (board[1][j] == board[i][1] == board[2][j]):
+        if board[0][j] != EMPTY and board[0][j] == board[1][j] == board[2][j]:
             return board[0][j]
-            
-    if (board[0][0] != EMPTY) and (board[0][0] == board[1][1] == board[2][2]):
+
+    if board[0][0] != EMPTY and board[0][0] == board[1][1] == board[2][2]:
         return board[0][0]
 
-    if (board[0][2] != EMPTY) and (board[0][2] == board[1][1] == board[2][0]):
+    if board[0][2] != EMPTY and board[0][2] == board[1][1] == board[2][0]:
         return board[0][2]
 
     return None
@@ -97,17 +97,18 @@ def terminal(board):
     if winner(board) != None:
         return True
 
-    for i in range(0, len(board)):
-        for j in range(0, len(board)):
-            if board[i][j] == EMPTY:
+    for i in board:
+        for j in i:
+            if j == EMPTY:
                 return False
-        return True
+    return True
 
 
 def utility(board):
     """
     Returns 1 if X has won the game, -1 if O has won, 0 otherwise.
     """
+
     if winner(board) == X:
         return 1
     elif winner(board) == O:
@@ -142,14 +143,16 @@ def minimax(board):
 
     move = None
 
-    if player(board) == X:
+    turn = player(board)
+
+    if turn == X:
         v = -math.inf
         for action in actions(board):
             min_v = min_value(result(board, action))
             if v < min_v:
                 v = min_v
                 move = action
-    elif player(board) == O:
+    elif turn == O:
         v = math.inf
         for action in actions(board):
             max_v = min_value(result(board, action))
