@@ -84,6 +84,20 @@ def main():
             print(f"{i + 1}: {person1} and {person2} starred in {movie}")
 
 
+def goal_test(node, target):
+
+    if node.state == target:
+        arr = []
+        while node.parent is not None:
+            arr.append((node.action, node.state))
+            node = node.parent
+
+        arr.reverse()
+        return arr
+
+    return None
+
+
 def shortest_path(source, target):
     """
     Returns the shortest list of (movie_id, person_id) pairs
@@ -92,8 +106,30 @@ def shortest_path(source, target):
     If no possible path, returns None.
     """
 
-    # TODO
-    raise NotImplementedError
+    start = Node(state=source, parent=None, action=None)
+    frontier = QueueFrontier()
+    frontier.add(start)
+
+    explored = set()
+
+    while True:
+        if frontier.empty():
+            return None
+
+        node = frontier.remove()
+
+        explored.add(node.state)
+
+        for action, state in neighbors_for_person(node.state):
+            if not frontier.contains_state(state) and state not in explored:
+                child = Node(state=state, parent=node, action=action)
+                goal = goal_test(child, target)
+                if goal:
+                    return goal
+                frontier.add(child)
+    
+    return None
+    #raise NotImplementedError
 
 
 def person_id_for_name(name):
